@@ -1,0 +1,308 @@
+* {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  background-color: #fff;
+  margin: 0px;
+}
+
+div,
+ul,
+nav,
+header,
+footer,
+a,
+li,
+label {
+  margin: 0;
+  padding: 0;
+}
+
+/** Header  **/
+.header {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header_logo {
+  max-width: 100%;
+  width: 128px;
+  margin: 10px 0px;
+}
+
+.label_titulo {
+  font-size: 28px;
+  padding: 0px 40px;
+  color: #992041;
+  text-align: center;
+}
+
+/*Barra de Navegacion*/
+.barra_navegacion {
+  background-color: #992041;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  container-type: inline-size;
+  container-name: barra;
+  box-shadow: 0 5px 10px 0 #0b0b05;
+}
+
+.barra__open-nav-button {
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 600;
+  position: absolute;
+  right: 10px;
+}
+
+.barra__checkbox {
+  display: none;
+  margin-right: 40px;
+}
+
+.barra__nav {
+  display: none;
+  background-color: #992041;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  z-index: -1;
+}
+
+.barra__nav-list {
+  display: flex;
+  flex-direction: column;
+  height: 40vh;
+  margin: auto;
+  justify-content: space-between;
+}
+
+.barra__checkbox:checked ~ .barra__nav {
+  display: flex;
+}
+.barra__logo {
+  max-width: 100%;
+  width: 100px;
+  margin: 10px 80px;
+}
+
+.barra__nav-item {
+  list-style: none;
+}
+
+.barra__nav-item a {
+  color: #fff;
+  font-family: "Gill Sans MT";
+}
+
+.barra__nav-item a:not(:hover) {
+  text-decoration: none;
+}
+/* BARRA QUERIES*/
+
+@container barra (min-width:600px) {
+  .barra__nav {
+    display: flex;
+    position: static;
+    height: auto;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .barra__nav-list {
+    flex-direction: row;
+    height: auto;
+    width: auto;
+    gap: 50px;
+    margin-right: 100px;
+  }
+
+  .barra__nav-item a {
+    margin: 0;
+  }
+
+  .barra__logo {
+    margin-left: 110px;
+  }
+
+  .barra__logo-container {
+    z-index: 30;
+  }
+
+  .barra__open-nav-button {
+    display: none;
+  }
+}
+
+/* BARRA ENDS*/
+
+/* TEXT ANIMATION */
+.text-container {
+  display: flex;
+  flex-direction: column;
+  height: 13vh;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  text-align: center;
+  width: auto;
+  container-type: size;
+  container-name: initial-text;
+}
+
+.init-text {
+  color: #992041;
+  letter-spacing: 3px;
+  animation: grow 5s both;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+@container initial-text (min-width:750px) {
+  .init-text {
+    font-size: 28px;
+    letter-spacing: 4px;
+  }
+}
+
+@keyframes grow {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* TEXT ENDS */
+
+/* HORARIO SECTION */
+.content {
+  container-name: horario;
+  container-type: inline-size;
+}
+
+.main__horario {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #80060a;
+  margin-top: 20px;
+  max-width: 1400px;
+}
+
+.horario__logo-container {
+  max-height: 500px;
+  overflow: hidden;
+}
+.horario__logo {
+  max-width: 100%;
+  width: 750px;
+}
+
+.horario__texto {
+  text-align: center;
+  color: #fff;
+  padding: 20px;
+  font-size: 20px;
+}
+
+.horario__texto {
+}
+
+/* HORARIO QUERIES */
+
+@container horario (min-width:150px) {
+  .main__horario {
+    flex-direction: row;
+    max-width: max-content;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    margin-top: 30px;
+    border-radius: 25px;
+  }
+
+  .horario__logo-container {
+    border-radius: 25px 0px 0px 25px;
+  }
+}
+
+/* HORARIO ENDS */
+
+/* VERIFY SECTION */
+.verify {
+  background-color: #fff;
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  container-name: verify;
+  container-type: inline-size;
+}
+
+.verify__project-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 1200px;
+  margin: auto;
+  width: 100%;
+  gap: 12px;
+  padding: 12px;
+  min-height: 90vh;
+}
+
+.verify__project {
+  background-image: linear-gradient(#992041, #d6141456),
+    url(../imagenes/camioneta-verificada.jpg);
+  background-position: center;
+  background-size: cover;
+  display: grid;
+  place-content: center;
+}
+
+.verify__project:hover {
+  opacity: 0.74;
+  outline: 2px solid rgba(103, 103, 103, 0.185);
+}
+
+.verify__titulo {
+  color: #0b0b05;
+  font-size: 49px;
+}
+
+.verify__project-name {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+/* VERIFY CONTAINER */
+@container verify (min-width: 750px) {
+  .verify__project-container {
+    grid-template-columns: repeat(auto-fill, minmax(100, 1fr));
+  }
+
+  .verify__project {
+    border-radius: 10px;
+  }
+  .verify__project:last-child {
+    grid-column: span 4;
+    max-height: 150px;
+    border-radius: 10px;
+  }
+  .verify__project:first-child {
+    grid-template-columns: 2fr;
+  }
+}

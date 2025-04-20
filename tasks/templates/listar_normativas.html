@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lista de Normativas</title>
+    <link rel="stylesheet" href="{% static 'css/stylesheet-seleccion.css' %}" />
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      .acciones button {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div>
+        <img class="header_logo" src="{% static 'imagenes/gobierno-edomex.jpeg' %}" alt="Logo Gobierno" />
+      </div>
+      <h1 class="label_titulo">Lista de Normativas</h1>
+      <div>
+        <img class="header_logo" src="{% static 'imagenes/El_Poder_de_Servir.jpeg' %}" alt="Logo Poder Servir" />
+      </div>
+    </header>
+
+    <a href="{% url 'nueva_normativa' %}">
+      <button>+ Nueva Normativa</button>
+    </a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Combustible</th>
+          <th>CO (%)</th>
+          <th>NOx (ppm)</th>
+          <th>OBD</th>
+          <th>Vigencia</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for normativa in normativas %}
+        <tr>
+          <td>{{ normativa.nombre }}</td>
+          <td>{{ normativa.tipo_combustible }}</td>
+          <td>{{ normativa.limite_co }}</td>
+          <td>{{ normativa.limite_nox }}</td>
+          <td>{% if normativa.usa_obd %}Sí{% else %}No{% endif %}</td>
+          <td>
+            {{ normativa.vigente_desde }}{% if normativa.vigente_hasta %} - {{ normativa.vigente_hasta }}{% else %} - Indefinido{% endif %}
+          </td>
+
+          <td class="acciones">
+            
+            
+            <a href="{% url 'editar_normativa' normativa.pk %}">
+              <button>Modificar</button>
+            </a>
+            <a href="{% url 'eliminar_normativa' normativa.pk %}">
+              <button>Eliminar</button>
+            </a>
+          </td>
+          
+
+
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">No hay normativas registradas.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

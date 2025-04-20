@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Editar Normativa</title>
+  <link rel="stylesheet" href="{% static 'css/stylesheet-seleccion.css' %}" />
+</head>
+<body>
+  <header class="header">
+    <div>
+      <img class="header_logo" src="{% static 'imagenes/gobierno-edomex.jpeg' %}" alt="Logo Gobierno" />
+    </div>
+    <h1 class="label_titulo">Editar Normativa</h1>
+    <div>
+      <img class="header_logo" src="{% static 'imagenes/El_Poder_de_Servir.jpeg' %}" alt="Logo Poder Servir" />
+    </div>
+  </header>
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <label for="nombre">Nombre o Código de la Normativa:</label>
+    <input type="text" id="nombre" name="nombre" value="{{ normativa.nombre }}" required />
+
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" name="descripcion" rows="4" required>{{ normativa.descripcion }}</textarea>
+
+    <label for="tipo_combustible">Tipo de Combustible:</label>
+    <select id="tipo_combustible" name="tipo_combustible" required>
+      <option value="">-- Seleccione un tipo --</option>
+      <option value="Gasolina" {% if normativa.tipo_combustible == 'Gasolina' %}selected{% endif %}>Gasolina</option>
+      <option value="Diésel" {% if normativa.tipo_combustible == 'Diésel' %}selected{% endif %}>Diésel</option>
+      <option value="Eléctrico" {% if normativa.tipo_combustible == 'Eléctrico' %}selected{% endif %}>Eléctrico</option>
+      <option value="Híbrido" {% if normativa.tipo_combustible == 'Híbrido' %}selected{% endif %}>Híbrido</option>
+    </select>
+
+    <label for="limite_co">Límite de CO (%) permitido:</label>
+    <input type="number" step="0.01" id="limite_co" name="limite_co" value="{{ normativa.limite_co }}" required />
+
+    <label for="limite_nox">Límite de NOx (ppm) permitido:</label>
+    <input type="number" step="0.01" id="limite_nox" name="limite_nox" value="{{ normativa.limite_nox }}" required />
+
+    <label for="usa_obd">¿Requiere revisión OBD?</label>
+    <select id="usa_obd" name="usa_obd" required>
+      <option value="1" {% if normativa.usa_obd %}selected{% endif %}>Sí</option>
+      <option value="0" {% if not normativa.usa_obd %}selected{% endif %}>No</option>
+    </select>
+
+    <label for="frecuencia_meses">Frecuencia (en meses):</label>
+    <input type="number" id="frecuencia_meses" name="frecuencia_meses" value="{{ normativa.frecuencia_meses }}" required />
+
+    <label for="vigente_desde">Vigente Desde:</label>
+    <input type="date" id="vigente_desde" name="vigente_desde" value="{{ normativa.vigente_desde }}" required />
+
+    <label for="vigente_hasta">Vigente Hasta (opcional):</label>
+    <input type="date" id="vigente_hasta" name="vigente_hasta" value="{{ normativa.vigente_hasta }}" />
+
+    <button type="submit">Guardar Cambios</button>
+  </form>
+</body>
+</html>

@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <link rel="stylesheet" href="{% static 'css/stylesheet-principal.css' %}" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pantalla Principal</title>
+  </head>
+  <body>
+    <header class="header">
+      <div>
+        <img
+          class="header_logo"
+          src="{% static 'imagenes/gobierno-edomex.jpeg' %}"
+          alt=""
+        />
+      </div>
+      <h1 class="label_titulo">Verificación Vehicular</h1>
+      <div>
+        <img
+          class="header_logo"
+          src="{% static 'imagenes/El_Poder_de_Servir.jpeg' %}"
+          alt=""
+        />
+      </div>
+    </header>
+    <div class="barra_navegacion">
+      <input type="checkbox" class="barra__checkbox" id="open-menu" />
+      <label for="open-menu" class="barra__open-nav-button" role="button"
+        >=</label
+      >
+      <div class="barra__logo-container">
+        <img
+          class="barra__logo"
+          src="{% static 'imagenes/verificacion-vehicular.jpg' %}"
+          alt=""
+        />
+      </div>
+      <nav class="barra__nav">
+        <ul class="barra__nav-list">
+          <li class="barra__nav-item">
+            <a href="{% url 'index' %}">Inicio</a>
+          </li>
+          <li class="barra__nav-item"><a href="#">Cuando verificar</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="text-container">
+      <p class="init-text">Verificación Vehicular Primer Semestre 2025</p>
+    </div>
+    `
+    <main class="content">
+      <div class="main__horario">
+        <div class="horario__logo-container">
+          <img
+            id="logo-transicion"
+            class="horario__logo"
+            src="{% static 'imagenes/aviso-normas.jpg' %}"
+            alt=""
+          />
+        </div>
+        <div class="horario__texto">
+          <h2></h2>
+          <label
+            >Inicie su gestión de regulaciones desde esta pantalla principal.<br />
+            Navegue a través de las secciones para consultar la documentación
+            oficial,<br />
+            revisar las últimas actualizaciones normativas<br />
+            y llevar a cabo las acciones necesarias para asegurar<br />
+            el cumplimiento dentro del sistema.
+          </label>
+        </div>
+      </div>
+    </main>
+
+    <section class="verify">
+      <h2 class="verify__titulo">Regulaciones</h2>
+      <div class="verify__project-container">
+        <div class="verify__project">
+          <a
+            href="{% url 'nueva_normativa' %}"
+            class="verify__project-name"
+            >Gestionar normativas</a
+          >
+        </div>
+
+        <div class="verify__project">
+          <a
+            href="{% url 'listar_normativas' %}"
+            class="verify__project-name"
+            >Consultar normativas</a
+          >
+        </div>
+
+        <div class="verify__project">
+          <a
+            href="{% url 'nueva_normativa' %}"
+            class="verify__project-name"
+          >
+            Generar reportes
+          </a>
+        </div>
+
+        <div class="verify__project">
+          <a
+            href="{% url 'nueva_normativa' %}"
+            class="verify__project-name"
+          >
+            Revisar verificacion vehicular</a
+          >
+        </div>
+      </div>
+    </section>
+    <script>
+      const logoImagen = document.getElementById("logo-transicion");
+      const imagenes = [
+        "{% static 'imagenes/aviso-normas3.jpg' %}",
+        "{% static 'imagenes/aviso-normas2.jpg' %}",
+        "{% static 'imagenes/aviso-normas.jpg' %}",
+      ];
+      let indiceActual = 0;
+      const intervalo = 4000; // Intervalo en milisegundos (3 segundos)
+
+      function cambiarImagen() {
+        logoImagen.style.opacity = 1; // Inicia la transición de opacidad
+
+        setTimeout(() => {
+          indiceActual = (indiceActual + 1) % imagenes.length;
+          logoImagen.src = imagenes[indiceActual];
+          logoImagen.style.opacity = 1; // Finaliza la transición de opacidad
+        }, 500); // Espera un poco antes de cambiar la src (debe coincidir con la duración de la transición CSS)
+      }
+
+      setInterval(cambiarImagen, intervalo);
+    </script>
+  </body>
+</html>

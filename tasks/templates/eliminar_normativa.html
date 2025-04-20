@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Eliminar Normativa</title>
+  <link rel="stylesheet" href="{% static 'css/stylesheet-seleccion.css' %}" />
+</head>
+<body>
+  <header class="header">
+    <h1 class="label_titulo">Eliminar Normativa</h1>
+  </header>
+
+  <h3>¿Estás seguro de que deseas eliminar la normativa "<strong>{{ normativa.nombre }}</strong>"?</h3>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Sí, eliminar</button>
+    <a href="{% url 'listar_normativas' %}"><button type="button">Cancelar</button></a>
+  </form>
+</body>
+</html>

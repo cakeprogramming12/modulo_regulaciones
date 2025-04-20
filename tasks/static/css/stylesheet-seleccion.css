@@ -1,0 +1,126 @@
+*{box-sizing: border-box;font-family: sans-serif;}
+
+body{
+    background-color: #fff;
+    margin: 0px;
+}
+
+div,ul,nav,header,footer,a,li,label{
+    margin: 0;
+    padding: 0;
+}
+
+/** Header  **/
+.header{
+    background-color: white;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+}
+
+.header_logo{
+    max-width: 100%;
+    width: 128px;
+    margin: 10px 0px;
+}
+
+.label_titulo{
+    font-size: 28px;
+    padding: 0px 40px;
+    color: #992041;
+    text-align: center;
+}
+
+/* FORM */
+.ap__title-container{
+    text-align: center;
+}
+.ap__title{
+    padding: 20px;
+    margin-top: 0%;
+    color: #992041;
+}
+
+.appointment{
+    padding: 0px;
+    text-align: start;
+    box-sizing:border-box;
+    max-width: 600px;
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px #992041;
+}
+
+.ap__form-container label{
+    text-align: end;
+}
+
+.ap__form{
+    padding: 7px;
+    margin-left: 20px;
+    display: flex;
+}
+.ap__form input{
+    width: 30%;
+    border-radius: 4px;
+    padding: 3px;
+    }
+
+.ap__form label{
+    display: flex;
+    width: 50%;
+}
+.form__checkbox input{
+    width: 3%;
+}
+.form__checkbox label{
+    width: 60%;
+}
+
+.ap__form button{
+    width: 20%;
+    background-color: #992041;
+    color: #fff;
+    padding: 6px;
+    border-radius: 5px;
+    margin: auto;
+    margin-top: 20px;
+}
+h3{
+    padding: 25px 100px 0px 100px;
+}
+form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px #992041;
+    max-width: 600px;
+    margin: auto;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin: 10px 0 5px;
+}
+
+select, input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+
+}
+
+button {
+    background-color: #992041;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #992040a8;
+}
