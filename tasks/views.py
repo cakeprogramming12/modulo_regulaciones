@@ -1,7 +1,15 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Normativa
+from .models import Normativa,Vehiculo,Verificacion
 from django.utils.dateparse import parse_date
+from django.db.models import Q
+from datetime import date
+from tasks import models
+from django.shortcuts import render
+from .models import Vehiculo, Normativa, Verificacion
+from datetime import date
+from django.db.models import Q
+from decimal import Decimal
 
 #Paguina principal
 def index(request):
@@ -78,3 +86,62 @@ def eliminar_normativa(request, pk):
 #reportes
 def reportes(request):
     return render(request, 'reportes.html')
+
+
+#Verfificacion
+def verificacion_vehicular(request):
+    resultado = None
+
+    if 'placa' in request.GET:
+        placa = request.GET['placa'].upper().strip()
+        try:
+            vehiculo = Vehiculo.objects.get(placa=placa)
+            normativa = Normativa.objects.filter(
+                tipo_combustible=vehiculo.tipo_combustible,
+                vigente_desde__lte=date.today()
+            ).filter(
+                Q(vigente_hasta__gte=date.today()) | Q(vigente_hasta__isnull=True)
+            ).first()
+
+            if normativa:
+                # Convertir los valores de co_medido y nox_medido a Decimal
+                try:
+                    co_medido = Decimal(request.GET.get('co_medido'))
+                    nox_medido = Decimal(request.GET.get('nox_medido'))
+                    obd_funciona = request.GET.get('obd_funciona') == 'true'
+                except (ValueError, TypeError) as e:
+                    resultado = f"⚠️ Error al procesar los valores de las emisiones: {e}"
+                    return render(request, 'verificacion_vehicular.html', {'resultado': resultado})
+
+                # Guardar las emisiones en el vehículo
+                vehiculo.co_medido = co_medido
+                vehiculo.nox_medido = nox_medido
+                vehiculo.save()
+
+                # Guardar los datos en la tabla de Verificacion
+                verificacion = Verificacion.objects.create(
+                    vehiculo=vehiculo,
+                    co_emitido=co_medido,
+                    nox_emitido=nox_medido,
+                    obd_funciona=obd_funciona,
+                    normativa_aplicada=normativa,
+                    aprobada=False  # Esto se determinará según la comparación
+                )
+
+                # Comparar los valores de emisión con la normativa
+                cumple = (
+                    co_medido <= normativa.limite_co and
+                    nox_medido <= normativa.limite_nox and
+                    obd_funciona == normativa.usa_obd
+                )
+                # Actualizar si es aprobado o no
+                verificacion.aprobada = cumple
+                verificacion.save()
+
+                resultado = '✅ Aprobado' if cumple else '❌ Rechazado'
+            else:
+                resultado = '⚠️ No hay normativa aplicable al vehículo.'
+        except Vehiculo.DoesNotExist:
+            resultado = '🚫 Vehículo no encontrado.'
+
+    return render(request, 'verificacion_vehicular.html', {'resultado': resultado})

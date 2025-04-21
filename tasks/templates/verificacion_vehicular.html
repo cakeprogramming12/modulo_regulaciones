@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Verificación Vehicular</title>
+  <link rel="stylesheet" href="{% static 'css/stylesheet-seleccion.css' %}" />
+</head>
+<body>
+  <header class="header">
+    <h1 class="label_titulo">Verificación Vehicular</h1>
+  </header>
+
+  <section style="margin: 30px;">
+    <h3>Ingresa la placa del vehículo a verificar:</h3>
+
+    <form method="GET">
+        {% csrf_token %}
+        <label for="placa">Placa del vehículo:</label>
+        <input type="text" id="placa" name="placa" required>
+        
+        <label for="co_medido">CO Medido (g/km):</label>
+        <input type="number" id="co_medido" name="co_medido" step="0.01" required>
+        
+        <label for="nox_medido">NOx Medido (g/km):</label>
+        <input type="number" id="nox_medido" name="nox_medido" step="0.01" required>
+        
+        <label for="obd_funciona">¿Funciona el OBD?:</label>
+        <input type="checkbox" id="obd_funciona" name="obd_funciona" value="true">
+        
+        <button type="submit">Realizar Verificación</button>
+    </form>
+    
+    {% if resultado %}
+        <p>Resultado de la verificación: {{ resultado }}</p>
+    {% endif %}
+    
+    {% if resultado %}
+      <div style="margin-top: 20px;">
+        <strong>Resultado:</strong> {{ resultado }}
+      </div>
+    {% endif %}
+  </section>
+</body>
+</html>
