@@ -7,8 +7,15 @@
   <link rel="stylesheet" href="{% static 'css/stylesheet-seleccion.css' %}" />
 </head>
 <body>
+
   <header class="header">
+    <div>
+      <img class="header_logo" src="{% static 'imagenes/gobierno-edomex.jpeg' %}" alt="Logo Gobierno" />
+    </div>
     <h1 class="label_titulo">Eliminar Normativa</h1>
+    <div>
+      <img class="header_logo" src="{% static 'imagenes/El_Poder_de_Servir.jpeg' %}" alt="Logo Poder Servir" />
+    </div>
   </header>
 
   <h3>¿Estás seguro de que deseas eliminar la normativa "<strong>{{ normativa.nombre }}</strong>"?</h3>
