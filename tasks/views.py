@@ -6,6 +6,7 @@ from django.utils.dateparse import parse_date
 #Paguina principal
 def index(request):
     return render(request, 'principalRegulaciones.html')
+    
 
 #listar normativas
 def listar_normativas(request):
@@ -72,3 +73,8 @@ def eliminar_normativa(request, pk):
         return redirect('listar_normativas')
 
     return render(request, 'eliminar_normativa.html', {'normativa': normativa})
+
+
+#reportes
+def reportes(request):
+    return render(request, 'reportes.html')

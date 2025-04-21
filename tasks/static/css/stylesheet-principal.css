@@ -265,7 +265,7 @@ label {
 
 .verify__project {
   background-image: linear-gradient(#992041, #d6141456),
-    url(../imagenes/camioneta-verificada.jpg);
+    url(../imagenes/boton.jpg);
   background-position: center;
   background-size: cover;
   display: grid;
