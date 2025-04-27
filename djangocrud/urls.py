@@ -17,6 +17,9 @@ urlpatterns = [
 
     # Reportes
     path('reportes/', views.reportes, name='reportes'),
+    path('reporte_aprobados/', views.reporte_vehiculos_aprobados, name='reporte_aprobados'),
+    path('reporte_rechazados/', views.reporte_vehiculos_rechazados, name='reporte_rechazados'),
+
 
     # Verificación vehicular
     path('verificacion/', views.verificacion_vehicular, name='verificacion_vehicular'),

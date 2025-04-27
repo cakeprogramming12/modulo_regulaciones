@@ -145,3 +145,167 @@ def verificacion_vehicular(request):
             resultado = '🚫 Vehículo no encontrado.'
 
     return render(request, 'verificacion_vehicular.html', {'resultado': resultado})
+
+
+
+
+#VISTAS PARA REPORTES
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch, mm   # <-- INCLUYE mm AQUÍ
+from datetime import datetime
+from .models import Verificacion
+from django.contrib.staticfiles import finders
+
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch, mm
+from datetime import datetime
+from .models import Verificacion
+from django.contrib.staticfiles import finders
+
+def reporte_vehiculos_aprobados(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="vehiculos_aprobados.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Agregar logo
+    logo_path = finders.find('imagenes/logo-reporte.png')  # Asegúrate de que el logo esté bien encontrado
+    if logo_path:
+        logo = Image(logo_path)
+        logo_width = 2*inch  # Puedes cambiar este valor a lo que prefieras
+        logo_height = (logo.imageHeight / logo.imageWidth) * logo_width  # Mantiene la proporción
+        logo.drawHeight = logo_height
+        logo.drawWidth = logo_width
+        logo.hAlign = 'LEFT'
+        elements.append(logo)
+
+
+    # Título
+    title = Paragraph("Reporte de Vehículos Aprobados", styles['Title'])
+    elements.append(title)
+
+    # Fecha de generación
+    fecha = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    fecha_paragraph = Paragraph(f"Fecha de generación: {fecha}", styles['Normal'])
+    elements.append(fecha_paragraph)
+
+    elements.append(Spacer(1, 20))
+
+    # Obtener datos
+    verificaciones_aprobadas = Verificacion.objects.filter(aprobada=True)
+
+    if not verificaciones_aprobadas.exists():
+        no_data = Paragraph("No hay vehículos aprobados registrados.", styles['Normal'])
+        elements.append(no_data)
+    else:
+        data = [['Placa', 'Marca', 'Modelo', 'Año']]
+
+        for verificacion in verificaciones_aprobadas:
+            vehiculo = verificacion.vehiculo
+            data.append([vehiculo.placa, vehiculo.marca, vehiculo.modelo, vehiculo.anio])
+
+        table = Table(data, hAlign='CENTER')
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#004aad')),
+            ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0,0), (-1,-1), 11),
+            ('BOTTOMPADDING', (0,0), (-1,0), 12),
+            ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+        ]))
+
+        elements.append(table)
+
+    # Agregar número de página
+    def agregar_numero_pagina(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Helvetica', 9)
+        page_number_text = f"Página {doc.page}"
+        canvas.drawRightString(200 * mm, 15 * mm, page_number_text)
+        canvas.restoreState()
+
+    doc.build(elements, onFirstPage=agregar_numero_pagina, onLaterPages=agregar_numero_pagina)
+
+    return response
+
+
+def reporte_vehiculos_rechazados(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="vehiculos_rechazados.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Agregar logo
+    logo_path = finders.find('imagenes/logo-reporte.png')  # Asegúrate de que el logo esté bien encontrado
+    if logo_path:
+        logo = Image(logo_path)
+        logo_width = 2*inch  # Puedes cambiar este valor a lo que prefieras
+        logo_height = (logo.imageHeight / logo.imageWidth) * logo_width  # Mantiene la proporción
+        logo.drawHeight = logo_height
+        logo.drawWidth = logo_width
+        logo.hAlign = 'LEFT'
+        elements.append(logo)
+
+    # Título
+    title = Paragraph("Reporte de Vehículos Rechazados", styles['Title'])
+    elements.append(title)
+
+    # Fecha de generación
+    fecha = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    fecha_paragraph = Paragraph(f"Fecha de generación: {fecha}", styles['Normal'])
+    elements.append(fecha_paragraph)
+
+    elements.append(Spacer(1, 20))
+
+    # Obtener datos
+    verificaciones_rechazadas = Verificacion.objects.filter(aprobada=False)
+
+    if not verificaciones_rechazadas.exists():
+        no_data = Paragraph("No hay vehículos rechazados registrados.", styles['Normal'])
+        elements.append(no_data)
+    else:
+        data = [['Placa', 'Marca', 'Modelo', 'Año']]
+
+        for verificacion in verificaciones_rechazadas:
+            vehiculo = verificacion.vehiculo
+            data.append([vehiculo.placa, vehiculo.marca, vehiculo.modelo, vehiculo.anio])
+
+        table = Table(data, hAlign='CENTER')
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#004aad')),
+            ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0,0), (-1,-1), 11),
+            ('BOTTOMPADDING', (0,0), (-1,0), 12),
+            ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+        ]))
+
+        elements.append(table)
+
+    # Agregar número de página
+    def agregar_numero_pagina(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Helvetica', 9)
+        page_number_text = f"Página {doc.page}"
+        canvas.drawRightString(200 * mm, 15 * mm, page_number_text)
+        canvas.restoreState()
+
+    doc.build(elements, onFirstPage=agregar_numero_pagina, onLaterPages=agregar_numero_pagina)
+
+    return response

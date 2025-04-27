@@ -48,4 +48,3 @@ class Verificacion(models.Model):
     aprobada = models.BooleanField()
 
     
-
