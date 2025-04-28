@@ -19,6 +19,7 @@ urlpatterns = [
     path('reportes/', views.reportes, name='reportes'),
     path('reporte_aprobados/', views.reporte_vehiculos_aprobados, name='reporte_aprobados'),
     path('reporte_rechazados/', views.reporte_vehiculos_rechazados, name='reporte_rechazados'),
+    path('reporte-multas-generadas/', views.reporte_multas_generadas, name='reporte_multas_generadas'),
 
 
     # Verificación vehicular

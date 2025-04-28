@@ -6,7 +6,7 @@ from django.db.models import Q
 from datetime import date
 from tasks import models
 from django.shortcuts import render
-from .models import Vehiculo, Normativa, Verificacion
+from .models import Vehiculo, Normativa, Verificacion, Multa
 from datetime import date
 from django.db.models import Q
 from decimal import Decimal
@@ -104,7 +104,6 @@ def verificacion_vehicular(request):
             ).first()
 
             if normativa:
-                # Convertir los valores de co_medido y nox_medido a Decimal
                 try:
                     co_medido = Decimal(request.GET.get('co_medido'))
                     nox_medido = Decimal(request.GET.get('nox_medido'))
@@ -113,32 +112,39 @@ def verificacion_vehicular(request):
                     resultado = f"⚠️ Error al procesar los valores de las emisiones: {e}"
                     return render(request, 'verificacion_vehicular.html', {'resultado': resultado})
 
-                # Guardar las emisiones en el vehículo
                 vehiculo.co_medido = co_medido
                 vehiculo.nox_medido = nox_medido
                 vehiculo.save()
 
-                # Guardar los datos en la tabla de Verificacion
                 verificacion = Verificacion.objects.create(
                     vehiculo=vehiculo,
                     co_emitido=co_medido,
                     nox_emitido=nox_medido,
                     obd_funciona=obd_funciona,
                     normativa_aplicada=normativa,
-                    aprobada=False  # Esto se determinará según la comparación
+                    aprobada=False
                 )
 
-                # Comparar los valores de emisión con la normativa
                 cumple = (
                     co_medido <= normativa.limite_co and
                     nox_medido <= normativa.limite_nox and
                     obd_funciona == normativa.usa_obd
                 )
-                # Actualizar si es aprobado o no
+
                 verificacion.aprobada = cumple
                 verificacion.save()
 
-                resultado = '✅ Aprobado' if cumple else '❌ Rechazado'
+                if not cumple:
+                    # Generar multa
+                    motivo = "Exceso de emisiones de CO o NOx, o mal funcionamiento de OBD."
+                    multa = Multa.objects.create(
+                        vehiculo=vehiculo,
+                        verificacion=verificacion,
+                        monto=Decimal('1500.00'),  # Puedes cambiar el monto si quieres
+                        motivo=motivo
+                    )
+
+                resultado = '✅ Aprobado' if cumple else '❌ Rechazado - Multa generada'
             else:
                 resultado = '⚠️ No hay normativa aplicable al vehículo.'
         except Vehiculo.DoesNotExist:
@@ -309,3 +315,77 @@ def reporte_vehiculos_rechazados(request):
     doc.build(elements, onFirstPage=agregar_numero_pagina, onLaterPages=agregar_numero_pagina)
 
     return response
+
+
+def reporte_multas_generadas(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="multas_generadas.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Agregar logo
+    logo_path = finders.find('imagenes/logo-reporte.png')
+    if logo_path:
+        logo = Image(logo_path)
+        logo_width = 2 * inch
+        logo_height = (logo.imageHeight / logo.imageWidth) * logo_width
+        logo.drawHeight = logo_height
+        logo.drawWidth = logo_width
+        logo.hAlign = 'LEFT'
+        elements.append(logo)
+
+    # Título
+    title = Paragraph("Reporte de Multas Generadas", styles['Title'])
+    elements.append(title)
+
+    # Fecha de generación
+    fecha = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    fecha_paragraph = Paragraph(f"Fecha de generación: {fecha}", styles['Normal'])
+    elements.append(fecha_paragraph)
+
+    elements.append(Spacer(1, 20))
+
+    # Obtener datos de Multa
+    multas = Multa.objects.all()
+
+    if not multas.exists():
+        no_data = Paragraph("No hay multas registradas.", styles['Normal'])
+        elements.append(no_data)
+    else:
+        data = [['Placa', 'Monto (MXN)', 'Motivo', 'Fecha']]
+
+        for multa in multas:
+            data.append([
+                multa.vehiculo.placa,
+                f"{multa.monto:.2f}",
+                multa.motivo,
+                multa.fecha.strftime("%d/%m/%Y")
+            ])
+
+        table = Table(data, hAlign='CENTER')
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#B22222')),  # Rojo quemado para encabezado
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
+        ]))
+
+        elements.append(table)
+
+    # Número de página
+    def agregar_numero_pagina(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Helvetica', 9)
+        page_number_text = f"Página {doc.page}"
+        canvas.drawRightString(200 * mm, 15 * mm, page_number_text)
+        canvas.restoreState()
+
+    doc.build(elements, onFirstPage=agregar_numero_pagina, onLaterPages=agregar_numero_pagina)
+
+    return response  # <<<< Asegúrate de devolver el response

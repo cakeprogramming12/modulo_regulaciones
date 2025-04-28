@@ -47,4 +47,13 @@ class Verificacion(models.Model):
     normativa_aplicada = models.ForeignKey(Normativa, on_delete=models.PROTECT)
     aprobada = models.BooleanField()
 
-    
+    #modelo de multa
+class Multa(models.Model):
+    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
+    verificacion = models.ForeignKey(Verificacion, on_delete=models.CASCADE)
+    fecha = models.DateField(auto_now_add=True)
+    monto = models.DecimalField(max_digits=8, decimal_places=2)
+    motivo = models.TextField()
+
+    def __str__(self):
+        return f"Multa para {self.vehiculo.placa} - {self.monto} MXN"
